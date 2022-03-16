@@ -1,8 +1,8 @@
 import React from "react";
-import useFireabse from "../../hooks/useFirebase";
+import useAuth from "../../hooks/useAuth";
 
 const Header = () => {
-  const { user, logout } = useFireabse();
+  const { user, logout } = useAuth();
   return (
     <div className="flex justify-center gap-4 items-center">
       {user?.email && (

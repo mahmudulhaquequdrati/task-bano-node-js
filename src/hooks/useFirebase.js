@@ -3,27 +3,38 @@ import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   signOut,
+  updateProfile,
   sendPasswordResetEmail,
   onAuthStateChanged,
 } from "firebase/auth";
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router";
 
 import FirebaseInit from "../firebase/Firebase.Init";
 
 FirebaseInit();
 const useFireabse = () => {
-  const navigate = useNavigate();
   const [user, setUser] = useState({});
   const auth = getAuth();
 
   // register user
-  const registerUser = (email, password) => {
+  const registerUser = (email, password, name, photo, navigate) => {
     createUserWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
         const user = userCredential.user;
         setUser(user);
         alert("user created!");
+        const updatedUser = {
+          email: email,
+          displayName: name,
+          photoURL: photo,
+        };
+        setUser(updatedUser);
+        // send user info to fireabse
+        updateProfile(auth.currentUser, {
+          displayName: name,
+          photoURL: photo,
+        });
+        // saveDatabase(photo);
         navigate("/");
       })
       .catch((error) => {
@@ -33,7 +44,7 @@ const useFireabse = () => {
   };
 
   // login user
-  const loginUser = (email, password) => {
+  const loginUser = (email, password, navigate) => {
     signInWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
         const user = userCredential.user;
@@ -71,6 +82,12 @@ const useFireabse = () => {
         // An error happened.
       });
   };
+
+  // send user photo to database
+  // const saveDatabase = (photo) => {
+  //   const userPhoto = { photo: photo };
+  //   fetch("/");
+  // };
 
   // observe the user
   useEffect(() => {
