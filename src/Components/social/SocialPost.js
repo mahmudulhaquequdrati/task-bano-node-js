@@ -3,7 +3,7 @@ import useAuth from "../../hooks/useAuth";
 import avatar from "../../images/avatar.jpg";
 
 const SocialPost = ({ posts, setPosts }) => {
-  const { user } = useAuth();
+  const { user, token } = useAuth();
   const [postText, setPostText] = useState("");
   const [img, setImg] = useState(null);
   // const comment = [];
@@ -18,17 +18,24 @@ const SocialPost = ({ posts, setPosts }) => {
     formData.append("photo", user?.photoURL);
     // formData.append("comments", comment);
 
-    fetch("http://localhost:5000/post", {
+    fetch("https://task-internshala-server.herokuapp.com/post", {
       method: "POST",
+      headers: {
+        authorization: `Bearer ${token}`,
+      },
       body: formData,
     })
       .then((res) => res.json())
       .then((data) => {
         if (data.insertedId) {
           alert("your post was successfully uploaded!❤️");
-          fetch("http://localhost:5000/post")
+          fetch("https://task-internshala-server.herokuapp.com/post")
             .then((res) => res.json())
             .then((data) => setPosts(data));
+          const field = document.getElementById("postField");
+          field.value = "";
+        } else if (data.message) {
+          alert("you don't have permission to make a post!");
           const field = document.getElementById("postField");
           field.value = "";
         }

@@ -3,7 +3,7 @@ import useAuth from "../../hooks/useAuth";
 import avatar from "../../images/avatar.jpg";
 
 const SinglePost = ({ post, setPosts }) => {
-  const { user } = useAuth();
+  const { user, token } = useAuth();
   const [click, setClick] = useState(true);
   const [handleComment, setHandleComment] = useState(false);
   const [comment, setComment] = useState("");
@@ -21,10 +21,12 @@ const SinglePost = ({ post, setPosts }) => {
       comments: comment,
       commentorPhoto: user?.photoURL,
       _id: _id,
+      reqEmail: user?.email,
     };
-    fetch("http://localhost:5000/comments", {
+    fetch("https://task-internshala-server.herokuapp.com/comments", {
       method: "PUT",
       headers: {
+        authorization: `Bearer ${token}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify(commentsInfo),
@@ -35,9 +37,18 @@ const SinglePost = ({ post, setPosts }) => {
           alert("comments added!❤️");
           const field = document.getElementById("comment");
           field.value = "";
-          fetch("http://localhost:5000/post")
+          fetch("https://task-internshala-server.herokuapp.com/posts", {
+            headers: {
+              email: user.email,
+              authorization: `Bearer ${token}`,
+            },
+          })
             .then((res) => res.json())
             .then((data) => setPosts(data));
+        } else if (data.message) {
+          alert("you are not valid to comment!");
+          const field = document.getElementById("comment");
+          field.value = "";
         }
       });
   };

@@ -5,6 +5,7 @@ import {
   signOut,
   updateProfile,
   sendPasswordResetEmail,
+  getIdToken,
   onAuthStateChanged,
 } from "firebase/auth";
 import { useEffect, useState } from "react";
@@ -14,6 +15,7 @@ import FirebaseInit from "../firebase/Firebase.Init";
 FirebaseInit();
 const useFireabse = () => {
   const [user, setUser] = useState({});
+  const [token, setToken] = useState("");
   const auth = getAuth();
 
   // register user
@@ -94,14 +96,19 @@ const useFireabse = () => {
     onAuthStateChanged(auth, (user) => {
       if (user) {
         setUser(user);
+        getIdToken(user).then((idToken) => {
+          setToken(idToken);
+        });
         // ...
       } else {
+        setUser({});
       }
     });
   }, [auth]);
 
   return {
     user,
+    token,
     registerUser,
     loginUser,
     resetPassword,
