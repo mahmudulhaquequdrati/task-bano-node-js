@@ -10,7 +10,6 @@ const SocialPart = () => {
   useEffect(() => {
     fetch(`https://task-internshala-server.herokuapp.com/posts`, {
       headers: {
-        email: user.email,
         authorization: `Bearer ${token}`,
       },
     })

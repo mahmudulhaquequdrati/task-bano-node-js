@@ -29,7 +29,11 @@ const SocialPost = ({ posts, setPosts }) => {
       .then((data) => {
         if (data.insertedId) {
           alert("your post was successfully uploaded!❤️");
-          fetch("https://task-internshala-server.herokuapp.com/post")
+          fetch("https://task-internshala-server.herokuapp.com/posts", {
+            headers: {
+              authorization: `Bearer ${token}`,
+            },
+          })
             .then((res) => res.json())
             .then((data) => setPosts(data));
           const field = document.getElementById("postField");
